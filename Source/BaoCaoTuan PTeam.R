@@ -4,16 +4,18 @@ library(ggplot2)
 library(writexl)
 library(tidyverse)
 
-#---------- Import data Pteam 16 - 22.11
-DataP <- read_excel("B:/Workstation/Dropbox/DataCenter/GHTK/Python/ReportPTeam.xlsx")
+# ---------------------- Clean and Setup
 
-head(DataP)
+rm(list = ls()) # Xoa du lieu 
+
+setwd("B:/Workstation/Dropbox/DataCenter/GHTK/GHTK_Reports/")
+Sys.setlocale("LC_CTYPE", "English_United States.1258")
+
+#---------- Import data Pteam 16 - 22.11
+DataP <- read_excel("./Dataset/DatasetPTeam_November.xlsx")
 
 #----------- Missing Values
 DataP <- na.omit(DataP)
-
-
-DataGoc<-DataP
 
 #------------ Ratio Bill Pass and Success
 
@@ -75,5 +77,5 @@ p
 
 
 sheets <- list("Source" = DataP, "Date" = DataPDate, "Volume" = DataPVolume, "Ratio" = DataPRatio) #assume sheet1 and sheet2 are data frames
-write_xlsx(sheets, "B:/Workstation/Dropbox/DataCenter/GHTK/Python/Export_PTeam.xlsx")
+write_xlsx(sheets, "./Export/Export_PTeam.xlsx")
 
