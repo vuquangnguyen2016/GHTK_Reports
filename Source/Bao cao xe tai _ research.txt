@@ -1,0 +1,25 @@
+Nghien cuu Bao cao xe tai 500kg
+
+- Volume = quan li bao tai
+{03.12.2019
+    volume = 330
+        volume > filter:  Đã giao hàng/chưa đối soát = 46
+        Volume > filter: đã đối soát = 254 
+            -> volume filter -> Thành công = 254 + 46 = 300
+            -> volume filter = 96+96+86+26
+
+    Hủy  = Không giao được: 9
+    Delay = 5
+
+}
+
+Filter: Trạng thái: Đã giao hàng........ = Trạng thái: Đ
+        Trạng thái: Không giao được......= Trạng thái: K
+        Trạng thái: Delay..........     = Trạng thái: D
+Filter by Admin: -> Filter: Không giao được -> Filter: Delay -> Volume- K - D = Success
+
+- Volume before 2.00pm: 
+    từ Đã điều phối giao hàng/Đang giao hàng sang Đã giao
+    = VolumeSuccess-After 
+
+- Đã nhập kho -> Đang giao hàng -> Delay giao hàng -> Không giao được hàng -> Đã giao hàng
