@@ -1,0 +1,168 @@
+---
+title: "ReportWeeklyDelivery"
+author: "lequangvietnam"
+date: "12/20/2019"
+output: html_document
+---
+
+Tham khao:
+{
+https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
+https://honingds.com/blog/dplyr-rename/
+https://r4ds.had.co.nz/tidy-data.html
+
+Dataset:
+https://data.world/data-ny-gov/2wgt-bc53
+
+Plot :
+https://www.r-graph-gallery.com/301-custom-lollipop-chart.html#general
+
+}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{bash}
+Danh sách COD -> Import danh sách COD thật
+-> Filter and Summary: theo Timeshift (shift 1: 13:15/ Shift 2: 18:00)
+	Volume của COD
+	Success -> SuccessRatio = Success/Volume
+	Delay
+	Cancel
+
+-> Caution:
+	Success = 1 OR	Success <= 0.25
+	Volume >= 150 OR Volume <=20
+
+	
+
+-> Filter and Mutate diligent
+	-> Đi trễ = Shift 1 %>% volume  = 0
+	-> Không đi làm = Shift 1 + Shift 2 = 0 
+	-> Còn lại là đúng giờ
+	
+	-> Count số người đi làm
+
+-> Group theo Cart
+-> Plot :
+	Bar	y = SuccessRatio, x = Cart
+	Bar	y = Volume, x = Cart
+	Pie 	data = DiligentFrame
+
+```
+
+## Report
+
+Báo cáo hằng tuần sản lượng giao của COD
+
+```{r cars}
+setwd("~/Dropbox/DataCenter/GHTK/GHTK_Reports/AnalysingVolume")
+
+rm(list = ls(RawD1_c,RawD1_c2))
+library(tidyverse)         
+library(readxl)
+library(dplyr)
+
+# hoa don cod Full kho BT2
+RawBill <-read_excel("hoa_don_cod_20191219120620_5dfb054c-dcd0-4c9e-af48-cc6e0a0a026e.xlsx", 
+    sheet = "Hóa đơn COD")
+    
+# Danh sach COD quan 1
+CODlist<- read_excel("CodQ1.xlsx")
+
+# Right-Join Bill hoa don COD1: https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
+
+RawD1 <- right_join(RawBill,CODlist,by="Cod")
+
+# Filter Volume ; Success ; Delay and 
+
+# Rename Colume -> English
+
+RawD1<-RawD1 %>% rename(Volume="SL ĐH", Success = "SL ĐH đã đối soát", Delay="SL ĐH delay", Returned="SL ĐH đã trả", TimeStamp="TG tạo", Money = "Tổng tiền thu") 
+
+# filter theo CART
+Extract_Cart <-RawD1 %>% 
+  select(Cart, Cod,Volume, Success, Delay, Returned) %>% 
+  group_by(Cart) %>%
+  arrange(desc(Volume),desc(Success), Delay) %>% 
+  summarise(
+    TotalVolume=sum(Volume, na.rm = TRUE), 
+    TotalSuccess=sum(Success,na.rm = TRUE), 
+    TotalDelay=sum(Delay, na.rm = TRUE), 
+    TotalReturned=sum(Returned,na.rm = TRUE),
+    RatioSuccess = TotalSuccess/TotalVolume 
+    )
+  
+View(Extract_Cart)
+```
+
+## Plot- Đồ thị mô tả
+
+Đồ thị thể hiện xuất giao
+
+```{r pressure, echo=FALSE}
+
+library(ggplot2)
+# Basic barplot
+plot1<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
+  geom_bar(stat="identity") + coord_flip()+geom_text(aes(label=TotalVolume), hjust=-0.23, size=2.5)+
+  theme_minimal()
+
+plot1   
+
+
+
+plot2<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
+  geom_segment( aes(x=Cart, xend=Cart, y=0, yend=TotalVolume), color="grey") +
+  geom_point( color="orange", size=4) +
+  theme_light() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.x = element_blank()
+  ) +
+  xlab("Cart") +
+  ylab("Tong san luong trong tuan ") +
+  coord_flip()
+plot2
+
+
+
+
+# Change baseline
+plot3<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
+  geom_segment( aes(x=Cart, xend=Cart, y=4000, yend=TotalVolume), color="grey") +
+  geom_point( color="orange", size=4) +
+  theme_light() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.x = element_blank()
+  ) + coord_flip() + 
+  xlab("Cart") +
+  ylab("Tong san luong")
+
+plot3
+
+
+```
+
+
+
+
+## Test
+```{r}
+Data1<- read_excel("chord-progressions.xlsx")
+View(Data1)
+
+Data1 %>% group_by(`Progression Quality`) %>% summarise(sum_a = sum(`3rd chord`))
+
+
+specie <- c(rep("sorgho" , 3) , rep("poacee" , 3) , rep("banana" , 3) , rep("triticum" , 3) )
+condition <- rep(c("normal" , "stress" , "Nitrogen") , 4)
+value <- abs(rnorm(12 , 0 , 15))
+data <- data.frame(specie,condition,value)
+data
+```
+
