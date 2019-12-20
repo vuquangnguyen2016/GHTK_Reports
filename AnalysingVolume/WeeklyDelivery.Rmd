@@ -40,7 +40,7 @@ https://r4ds.had.co.nz/tidy-data.html
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{bash}
+
 Danh sách COD -> Import danh sách COD thật
 -> Filter and Summary: theo Timeshift (shift 1: 13:15/ Shift 2: 18:00)
 	Volume của COD
@@ -67,8 +67,6 @@ Danh sách COD -> Import danh sách COD thật
 	Bar	y = Volume, x = Cart
 	Pie 	data = DiligentFrame
 
-```
-
 ## Report
 
 Báo cáo hằng tuần sản lượng giao của COD
@@ -76,7 +74,7 @@ Báo cáo hằng tuần sản lượng giao của COD
 ```{r cars}
 setwd("~/Dropbox/DataCenter/GHTK/GHTK_Reports/AnalysingVolume")
 
-rm(list = ls(RawD1_c,RawD1_c2))
+rm(list = ls())
 library(tidyverse)         
 library(readxl)
 library(dplyr)
@@ -119,9 +117,13 @@ Exportsheet<- list("Cart" = Extract_Cart, "Raw" = RawD1, "Cod" = CODlist) #assum
 
 write_xlsx(Exportsheet,"ExportSheet.xlsx")
 
+
+```
+
+
 ## Plot- Đồ thị mô tả
 
-Đồ thị thể hiện xuất giao
+# Đồ thị thể hiện xuất giao
 
 ```{r pressure, echo=FALSE}
 
@@ -174,18 +176,5 @@ ggsave("Lipplot_Volume.png", scale = 1.2, width = 5, height = 4, units = "in")
 
 
 
-## Test
-```{r}
-Data1<- read_excel("chord-progressions.xlsx")
-View(Data1)
 
-Data1 %>% group_by(`Progression Quality`) %>% summarise(sum_a = sum(`3rd chord`))
-
-
-specie <- c(rep("sorgho" , 3) , rep("poacee" , 3) , rep("banana" , 3) , rep("triticum" , 3) )
-condition <- rep(c("normal" , "stress" , "Nitrogen") , 4)
-value <- abs(rnorm(12 , 0 , 15))
-data <- data.frame(specie,condition,value)
-data
-```
 
