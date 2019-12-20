@@ -7,15 +7,32 @@ output: html_document
 
 Tham khao:
 {
+
+Join Dataset
+www.programmingr.com/tutorial/left-join-in-r/
+https://honingds.com/blog/dplyr-rename/
 https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
 https://honingds.com/blog/dplyr-rename/
 https://r4ds.had.co.nz/tidy-data.html
+https://datacarpentry.org/R-genomics/04-dplyr.html
+
+https://www3.nd.edu/~steve/computing_with_data/24_dplyr/dplyr.html
+
 
 Dataset:
 https://data.world/data-ny-gov/2wgt-bc53
 
 Plot :
 https://www.r-graph-gallery.com/301-custom-lollipop-chart.html#general
+
+Write XLXSL https://stackoverflow.com/questions/27713310/easy-way-to-export-multiple-data-frame-to-multiple-excel-worksheets
+
+http://www.sthda.com/english/wiki/writing-data-from-r-to-excel-files-xls-xlsx
+https://ggplot2.tidyverse.org/reference/ggsave.html
+http://www.sthda.com/english/wiki/ggplot2-barplots-quick-start-guide-r-software-and-data-visualization
+
+https://r4ds.had.co.nz/tidy-data.html
+
 
 }
 
@@ -63,6 +80,9 @@ rm(list = ls(RawD1_c,RawD1_c2))
 library(tidyverse)         
 library(readxl)
 library(dplyr)
+library(writexl)
+
+
 
 # hoa don cod Full kho BT2
 RawBill <-read_excel("hoa_don_cod_20191219120620_5dfb054c-dcd0-4c9e-af48-cc6e0a0a026e.xlsx", 
@@ -94,8 +114,10 @@ Extract_Cart <-RawD1 %>%
     RatioSuccess = TotalSuccess/TotalVolume 
     )
   
-View(Extract_Cart)
-```
+
+Exportsheet<- list("Cart" = Extract_Cart, "Raw" = RawD1, "Cod" = CODlist) #assume sheet1 and sheet2 are data frames
+
+write_xlsx(Exportsheet,"ExportSheet.xlsx")
 
 ## Plot- Đồ thị mô tả
 
@@ -145,6 +167,7 @@ plot3<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
 
 plot3
 
+ggsave("Lipplot_Volume.png", scale = 1.2, width = 5, height = 4, units = "in")
 
 ```
 
