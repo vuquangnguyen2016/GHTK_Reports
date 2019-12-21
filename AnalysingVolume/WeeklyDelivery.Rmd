@@ -8,6 +8,9 @@ output: html_document
 Tham khao:
 {
 
+---- Right-Join Bill hoa don COD1: https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
+
+
 Join Dataset
 www.programmingr.com/tutorial/left-join-in-r/
 https://honingds.com/blog/dplyr-rename/
@@ -48,6 +51,17 @@ Danh sách COD -> Import danh sách COD thật
 	Delay
 	Cancel
 
+		-> Filter Volume theo Daily
+
+-> Group theo Cart
+-> Plot :
+	Bar	y = SuccessRatio, x = Cart
+	Bar	y = Volume, x = Cart
+	Pie 	data = DiligentFrame
+
+
+
+
 -> Caution:
 	Success = 1 OR	Success <= 0.25
 	Volume >= 150 OR Volume <=20
@@ -60,36 +74,31 @@ Danh sách COD -> Import danh sách COD thật
 	-> Còn lại là đúng giờ
 	
 	-> Count số người đi làm
-
--> Group theo Cart
--> Plot :
-	Bar	y = SuccessRatio, x = Cart
-	Bar	y = Volume, x = Cart
-	Pie 	data = DiligentFrame
-
+	
 ## Report
 
 Báo cáo hằng tuần sản lượng giao của COD
 
 ```{r cars}
-setwd("~/Dropbox/DataCenter/GHTK/GHTK_Reports/AnalysingVolume")
 
-rm(list = ls())
+
 library(tidyverse)         
 library(readxl)
 library(dplyr)
 library(writexl)
+library(ggplot2)
+library(stringr)
 
+#--    Setting
 
+# Import
+rm(list = ls())
+setwd("~/Dropbox/DataCenter/GHTK/GHTK_Reports/AnalysingVolume")
+NameFile='hoa_don_cod_20191221093913_5dfd85d1-9fac-43d3-a150-5a1f0a0a026e.xlsx'
 
-# hoa don cod Full kho BT2
-RawBill <-read_excel("hoa_don_cod_20191219120620_5dfb054c-dcd0-4c9e-af48-cc6e0a0a026e.xlsx", 
-    sheet = "Hóa đơn COD")
-    
-# Danh sach COD quan 1
+RawBill <-read_excel(NameFile,  sheet = "Hóa đơn COD")
 CODlist<- read_excel("CodQ1.xlsx")
 
-# Right-Join Bill hoa don COD1: https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
 
 RawD1 <- right_join(RawBill,CODlist,by="Cod")
 
@@ -116,6 +125,28 @@ Extract_Cart <-RawD1 %>%
 Exportsheet<- list("Cart" = Extract_Cart, "Raw" = RawD1, "Cod" = CODlist) #assume sheet1 and sheet2 are data frames
 
 write_xlsx(Exportsheet,"ExportSheet.xlsx")
+
+
+
+
+# I=
+plot3<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
+  geom_segment( aes(x=Cart, xend=Cart, y=4000, yend=TotalVolume), color="grey") +
+  geom_point( color="orange", size=4) +
+  theme_light() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.x = element_blank()
+  ) + coord_flip() + 
+  xlab("Cart") +
+  ylab("Tong san luong")
+
+plot3
+
+ggsave("Lipplot_Volume.png", scale = 1.2, width = 5, height = 4, units = "in")
+
+
 
 
 ```
