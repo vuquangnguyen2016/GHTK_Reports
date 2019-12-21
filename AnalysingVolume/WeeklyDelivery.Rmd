@@ -7,6 +7,9 @@ output: html_document
 
 Tham khao:
 {
+--- String
+https://stackoverflow.com/questions/50144725/extract-datetime-from-a-string-in-r
+
 
 ---- Right-Join Bill hoa don COD1: https://medium.com/@HollyEmblem/joining-data-with-dplyr-in-r-874698eb8898
 
@@ -122,15 +125,50 @@ Extract_Cart <-RawD1 %>%
     )
   
 
-Exportsheet<- list("Cart" = Extract_Cart, "Raw" = RawD1, "Cod" = CODlist) #assume sheet1 and sheet2 are data frames
-
-write_xlsx(Exportsheet,"ExportSheet.xlsx")
 
 
 
 
-# I=
-plot3<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
+
+#-------------- Daily
+
+pattern_date <- "[0-9]{2}-[0-9]{2}-[0-9]{2}"
+pattern_time <- "[0-9]{2}:[0-9]{2}"
+
+
+
+RawD1<- RawD1 %>% 
+  mutate(DatelyStamp = str_extract(TimeStamp,pattern_date))
+
+
+Extract_Daily <- RawD1 %>% 
+  group_by(DatelyStamp) %>% 
+  summarise(
+    TotalVolume_Daily = sum(Volume,na.rm = TRUE),
+    TotalDelay_Daily = sum(Delay,na.rm = TRUE),
+    TotalSuccess_Daily = sum(Success,na.rm = TRUE),
+    TotalReturned_Daily = sum(Returned,na.rm = TRUE),
+    Ratio_Success_Daily = TotalSuccess_Daily/TotalVolume_Daily    
+    )
+
+#----------- Export dateframe
+
+ExportSheet_Q1<- list("Cart" = Extract_Cart, "Daily" = Extract_Daily)
+
+write_xlsx(ExportSheet_Q1,"ExportSheet_Q1.xlsx")
+
+```
+
+
+
+
+
+## Plot- Đồ thị mô tả
+```{r pressure, echo=FALSE}
+
+
+# Xuat Plot theo Cart
+plotCart<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
   geom_segment( aes(x=Cart, xend=Cart, y=4000, yend=TotalVolume), color="grey") +
   geom_point( color="orange", size=4) +
   theme_light() +
@@ -140,19 +178,19 @@ plot3<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
     axis.ticks.x = element_blank()
   ) + coord_flip() + 
   xlab("Cart") +
-  ylab("Tong san luong")
+  ylab("Tong san luong theo CART")
 
-plot3
+plotCart
 
-ggsave("Lipplot_Volume.png", scale = 1.2, width = 5, height = 4, units = "in")
+ggsave("Lipplot_Volume.png", scale = 1.2, width = 3, height = 3.5, units = "in")
+
+
 
 
 
 
 ```
 
-
-## Plot- Đồ thị mô tả
 
 # Đồ thị thể hiện xuất giao
 
