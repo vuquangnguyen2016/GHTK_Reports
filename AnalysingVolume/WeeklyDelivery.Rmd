@@ -54,7 +54,7 @@ Danh sách COD -> Import danh sách COD thật
 	Delay
 	Cancel
 
-		-> Filter Volume theo Daily
+		-> Filter Volume theo Dately
 
 -> Group theo Cart
 -> Plot :
@@ -91,6 +91,7 @@ library(dplyr)
 library(writexl)
 library(ggplot2)
 library(stringr)
+library(viridis)
 
 #--    Setting
 
@@ -130,7 +131,7 @@ Extract_Cart <-RawD1 %>%
 
 
 
-#-------------- Daily
+#-------------- Dately
 
 pattern_date <- "[0-9]{2}-[0-9]{2}-[0-9]{2}"
 pattern_time <- "[0-9]{2}:[0-9]{2}"
@@ -141,19 +142,32 @@ RawD1<- RawD1 %>%
   mutate(DatelyStamp = str_extract(TimeStamp,pattern_date))
 
 
-Extract_Daily <- RawD1 %>% 
+Extract_Dately <- RawD1 %>% 
   group_by(DatelyStamp) %>% 
   summarise(
-    TotalVolume_Daily = sum(Volume,na.rm = TRUE),
-    TotalDelay_Daily = sum(Delay,na.rm = TRUE),
-    TotalSuccess_Daily = sum(Success,na.rm = TRUE),
-    TotalReturned_Daily = sum(Returned,na.rm = TRUE),
-    Ratio_Success_Daily = TotalSuccess_Daily/TotalVolume_Daily    
-    )
+    TotalVolume_Dately = sum(Volume,na.rm = TRUE),
+    TotalDelay_Dately = sum(Delay,na.rm = TRUE),
+    TotalSuccess_Dately = sum(Success,na.rm = TRUE),
+    TotalReturned_Dately = sum(Returned,na.rm = TRUE),
+    Ratio_Success_Dately = TotalSuccess_Dately/TotalVolume_Dately    
+    ) %>% drop_na()
+
+
+Extract_Dately_Cart <- RawD1 %>% 
+  group_by(DatelyStamp,Cart) %>% 
+    summarise(
+    TotalVolume_Dately = sum(Volume,na.rm = TRUE),
+    TotalDelay_Dately = sum(Delay,na.rm = TRUE),
+    TotalSuccess_Dately = sum(Success,na.rm = TRUE),
+    TotalReturned_Dately = sum(Returned,na.rm = TRUE),
+    Ratio_Success_Dately = TotalSuccess_Dately/TotalVolume_Dately    
+    ) %>% drop_na()
+
+
 
 #----------- Export dateframe
 
-ExportSheet_Q1<- list("Cart" = Extract_Cart, "Daily" = Extract_Daily)
+ExportSheet_Q1<- list("Cart" = Extract_Cart, "Dately" = Extract_Dately, "DatelyCart"= Extract_Dately_Cart  )
 
 write_xlsx(ExportSheet_Q1,"ExportSheet_Q1.xlsx")
 
@@ -182,11 +196,25 @@ plotCart<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
 
 plotCart
 
+
+plotDately<-ggplot(data=Extract_Dately, aes(x=DatelyStamp, y=TotalVolume_Dately)) +
+  geom_segment( aes(x=DatelyStamp, xend=DatelyStamp, y=0, yend=TotalVolume_Dately), color="grey") +
+  geom_point( color="orange", size=4) +
+  theme_light() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.x = element_blank()
+  ) + coord_flip() + 
+  xlab("DatelyStamp") +
+  ylab("Tong san luong theo Dately")
+
+
+plotDately
+
 ggsave("Lipplot_Volume.png", scale = 1.2, width = 3, height = 3.5, units = "in")
 
-
-
-
+# BOX 
 
 
 ```
