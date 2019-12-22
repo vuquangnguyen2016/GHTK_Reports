@@ -4,13 +4,12 @@ library(dplyr)
 library(writexl)
 library(ggplot2)
 library(stringr)
-library(viridis)
 
-#--    Setting
 
-# Import
+# Import---------------------------------------------------------------------------------------
+
 rm(list = ls())
-setwd("~/Dropbox/DataCenter/GHTK/GHTK_Reports/AnalysingVolume")
+setwd("/home/lequang/Dropbox/DataCenter/GHTK/GHTK_Reports/ReportQ1")
 NameFile='hoa_don_cod_20191221093913_5dfd85d1-9fac-43d3-a150-5a1f0a0a026e.xlsx'
 
 RawBill <-read_excel(NameFile,  sheet = "Hóa đơn COD")
@@ -19,9 +18,9 @@ CODlist<- read_excel("CodQ1.xlsx")
 
 RawD1 <- right_join(RawBill,CODlist,by="Cod")
 
-# Filter Volume ; Success ; Delay and 
 
-# Rename Colume -> English
+
+# Rename Colume -> English ---------------------------------------------------------------------------------------
 
 RawD1<-RawD1 %>% rename(Volume="SL ĐH", Success = "SL ĐH đã đối soát", Delay="SL ĐH delay", Returned="SL ĐH đã trả", TimeStamp="TG tạo", Money = "Tổng tiền thu") 
 
@@ -38,7 +37,7 @@ Extract_Cart <-RawD1 %>%
     RatioSuccess = TotalSuccess/TotalVolume 
   )
 
-#-------------- Dately
+#-------------- Dately ---------------------------------------------------------------------------------------
 
 pattern_date <- "[0-9]{2}-[0-9]{2}-[0-9]{2}"
 pattern_time <- "[0-9]{2}:[0-9]{2}"
@@ -72,13 +71,18 @@ Extract_Dately_Cart <- RawD1 %>%
 
 
 
-#----------- Export dateframe
+#----------- Export dateframe ---------------------------------------------------------------------------------------
 
 ExportSheet_Q1<- list("Cart" = Extract_Cart, "Dately" = Extract_Dately, "DatelyCart"= Extract_Dately_Cart  )
 
 write_xlsx(ExportSheet_Q1,"ExportSheet_Q1.xlsx")
 
-# Xuat Plot theo Cart
+
+
+
+
+# Xuat Plot theo Cart ---------------------------------------------------------------------------------------
+
 plotCart<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
   geom_segment( aes(x=Cart, xend=Cart, y=0, yend=TotalVolume), color="grey") +
   geom_point( color="orange", size=4) +
@@ -91,12 +95,25 @@ plotCart<-ggplot(data=Extract_Cart, aes(x=Cart, y=TotalVolume)) +
   xlab("Cart") +
   ylab("Tong san luong theo CART")
 
-plotCart
+ggsave("Plot Volume theo Cart.png")
 
+#---------------------- RatioSuccess in Plot Cart
+
+plotCart_Ratio<-ggplot(Extract_Cart, aes(Cart, RatioSuccess, group=1)) + 
+  geom_point(color="red",size=3) +
+  geom_line() +
+	coord_flip()+
+	xlab("CART")+
+	ylab("RatioSuccess")
+
+
+ggsave("Plot Ratio Success theo Cart.png")
+
+#-------------- Do thi bao cao theo Dately ---------------------------------------------------------------------------------------
 
 plotDately<-ggplot(data=Extract_Dately, aes(x=DatelyStamp, y=TotalVolume_Dately)) +
   geom_segment( aes(x=DatelyStamp, xend=DatelyStamp, y=0, yend=TotalVolume_Dately), color="grey") +
-  geom_point( color="orange", size=4) +
+  geom_point( color="red", size=4) +
   theme_light() +
   theme(
     panel.grid.major.x = element_blank(),
@@ -107,4 +124,17 @@ plotDately<-ggplot(data=Extract_Dately, aes(x=DatelyStamp, y=TotalVolume_Dately)
   ylab("Tong san luong theo Dately")
 
 
-plotDately
+
+ggsave("Plot Volume theo Dately.png")
+
+
+
+#------------- ---------------------------------------------------------------------------------------
+pattern_NoCOD = "\\-*\\d+\\.*\\d*"
+Contact<-RawD1 %>%
+  select(Cod, Volume, Success, Delay, Returned) %>% 
+  mutate(
+    NoCOD = str_c("T",str_extract(Cod, pattern_NoCOD)) 
+    )
+
+

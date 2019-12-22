@@ -7,7 +7,12 @@ output: html_document
 
 Tham khao:
 {
+
+https://www.datacamp.com/community/tutorials/r-or-python-for-data-analysis
+
 --- String
+http://stla.github.io/stlapblog/posts/Numextract.html
+
 https://stackoverflow.com/questions/50144725/extract-datetime-from-a-string-in-r
 
 
