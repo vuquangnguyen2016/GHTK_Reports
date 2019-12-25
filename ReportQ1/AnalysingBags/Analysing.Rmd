@@ -1,0 +1,44 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Ngay 25/12/2019
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(writexl)
+
+
+rm(list = ls())
+DirFile ="~/Downloads/" 
+
+# -------- Kho BT2 -> BC NCT
+
+NameB1 = "export_bag_data_2019-12-25 (3).csv" # File nay la BC NCT 25/12/2019
+
+NameNCT="export_bag_data_2019-12-25.csv"
+
+DataB1 <- read.csv(str_c(DirFile,NameB1))
+DataNCT <- read.csv(str_c(DirFile,NameNCT))
+
+
+# -------- Kho BT2 -> BC NVC
+
+NameB2 = "export_bag_data_2019-12-25 (3).csv" # File nay la BC NCT 25/12/2019
+
+NameNVC="export_bag_data_2019-12-25.csv"
+
+DataB2 <- read.csv(str_c(DirFile,NameB2))
+DataNVC <- read.csv(str_c(DirFile,NameNVC))
+
+
+
+Data2 %>% 
+  filter(So_don == 0) %>% 
+  summarise(SoBao = n()) 
+
+Data1
+```
+

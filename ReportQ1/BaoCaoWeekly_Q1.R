@@ -5,6 +5,10 @@ library(writexl)
 library(ggplot2)
 library(stringr)
 
+# Unix 
+Sys.setlocale("LC_ALL", 'en_US.UTF-8')
+# Windows 
+Sys.setlocale("LC_ALL", "en_US.ISO8859-1")
 
 # Import---------------------------------------------------------------------------------------
 
