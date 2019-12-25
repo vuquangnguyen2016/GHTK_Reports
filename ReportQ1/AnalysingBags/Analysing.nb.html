@@ -1752,18 +1752,37 @@ summary {
 <p>Ngay 25/12/2019</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibmNvbCI6MSwibnJvdyI6MX0sInJkZiI6Ikg0c0lBQUFBQUFBQUExMVB5dzZDTUJCY0NzVkE0aVB4TytpRmkyZGovQUFmQ2RjS1ZZbllFaWpScjBlM3BFMjBwOTJkek16T0hIWkZuaFlwQUlRUXhnR0VGRmVnNTlNKzJ3QkVCSThBSWtqTWZDTnBQUUVBY3p1SlI2S1NQMFdQeStvWFBLb3RWeDR6NmRTTE9iYXpDM3k3c3VHOWI1ZFdYSE4yN1ZDTDEraEpacXJWdFpJb0lpWXM5Y1JCNXdITFFab1VWVmJlQi9uSWN2UEFwb0gvWkg1SzhyRlcxRnJGUXQ1cUtWejJobDlFWTQ4RnRwM0tzcmFycFhaTkVPMlpWcG83WGxxcXhpRlROeGkvaVZmaUNxTUJBQUE9In0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["SoBao"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"2"}],"options":{"columns":{"min":{},"max":[10],"total":[1]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGx1YnJpZGF0ZSlcbmxpYnJhcnkocmVhZHhsKVxubGlicmFyeSh3cml0ZXhsKVxuXG5cbnJtKGxpc3QgPSBscygpKVxuc2V0d2QoXCJ+L0Ryb3Bib3gvRGF0YUNlbnRlci9HSFRLL0dIVEtfUmVwb3J0cy9SZXBvcnRRMS9BbmFseXNpbmdCYWdzXCIpXG5cbiMgLS0tLS0tLS0gS2hvIEJUMiAtPiBCQyBOQ1RcblxuI05hbWVCMSA9IFwiZXhwb3J0X2JhZ19kYXRhXzIwMTktMTItMjUgKDMpLmNzdlwiICMgRmlsZSBuYXkgbGEgQkMgTkNUIDI1LzEyLzIwMTlcblxuI05hbWVOQ1Q9XCJleHBvcnRfYmFnX2RhdGFfMjAxOS0xMi0yNS5jc3ZcIlxuXG4jRGF0YUIxIDwtIHJlYWQuY3N2KHN0cl9jKERpckZpbGUsTmFtZUIxKSlcbiNEYXRhTkNUIDwtIHJlYWQuY3N2KHN0cl9jKERpckZpbGUsTmFtZU5DVCkpXG5cblxuRGF0YUIxIDwtIHJlYWRfY3N2KFwiLi9EYXRhL0RhdGFCMS5jc3ZcIilcbkRhdGFCMiA8LSByZWFkX2NzdihcIi4vRGF0YS9EYXRhQjIuY3N2XCIpXG5EYXRhTkNUIDwtIHJlYWRfY3N2KFwiLi9EYXRhL0RhdGFOQ1QuY3N2XCIpXG5EYXRhTlZDIDwtIHJlYWRfY3N2KFwiLi9EYXRhL0RhdGFOVkMuY3N2XCIpXG5cbiMgLS0tLS0tLS0gS2hvIEJUMiAtPiBCQyBOVkNcblxuYGBgIn0= -->
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(readxl)
+library(writexl)
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKTmdheSAyNS8xMi8yMDE5CgpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHdyaXRleGwpCgoKcm0obGlzdCA9IGxzKCkpCkRpckZpbGUgPSJ+L0Rvd25sb2Fkcy8iIAoKIyAtLS0tLS0tLSBLaG8gQlQyIC0+IEJDIE5DVAoKTmFtZUIxID0gImV4cG9ydF9iYWdfZGF0YV8yMDE5LTEyLTI1ICgzKS5jc3YiICMgRmlsZSBuYXkgbGEgQkMgTkNUIDI1LzEyLzIwMTkKCk5hbWVOQ1Q9ImV4cG9ydF9iYWdfZGF0YV8yMDE5LTEyLTI1LmNzdiIKCkRhdGFCMSA8LSByZWFkLmNzdihzdHJfYyhEaXJGaWxlLE5hbWVCMSkpCkRhdGFOQ1QgPC0gcmVhZC5jc3Yoc3RyX2MoRGlyRmlsZSxOYW1lTkNUKSkKCgojIC0tLS0tLS0tIEtobyBCVDIgLT4gQkMgTlZDCgpOYW1lQjIgPSAiZXhwb3J0X2JhZ19kYXRhXzIwMTktMTItMjUgKDMpLmNzdiIgIyBGaWxlIG5heSBsYSBCQyBOQ1QgMjUvMTIvMjAxOQoKTmFtZU5WQz0iZXhwb3J0X2JhZ19kYXRhXzIwMTktMTItMjUuY3N2IgoKRGF0YUIyIDwtIHJlYWQuY3N2KHN0cl9jKERpckZpbGUsTmFtZUIyKSkKRGF0YU5WQyA8LSByZWFkLmNzdihzdHJfYyhEaXJGaWxlLE5hbWVOVkMpKQoKCgpEYXRhMiAlPiUgCiAgZmlsdGVyKFNvX2RvbiA9PSAwKSAlPiUgCiAgc3VtbWFyaXNlKFNvQmFvID0gbigpKSAKCkRhdGExCmBgYAoK</div>
+
+rm(list = ls())
+setwd(&quot;~/Dropbox/DataCenter/GHTK/GHTK_Reports/ReportQ1/AnalysingBags&quot;)
+
+# -------- Kho BT2 -&gt; BC NCT
+
+#NameB1 = &quot;export_bag_data_2019-12-25 (3).csv&quot; # File nay la BC NCT 25/12/2019
+
+#NameNCT=&quot;export_bag_data_2019-12-25.csv&quot;
+
+#DataB1 &lt;- read.csv(str_c(DirFile,NameB1))
+#DataNCT &lt;- read.csv(str_c(DirFile,NameNCT))
+
+
+DataB1 &lt;- read_csv(&quot;./Data/DataB1.csv&quot;)
+DataB2 &lt;- read_csv(&quot;./Data/DataB2.csv&quot;)
+DataNCT &lt;- read_csv(&quot;./Data/DataNCT.csv&quot;)
+DataNVC &lt;- read_csv(&quot;./Data/DataNVC.csv&quot;)
+
+# -------- Kho BT2 -&gt; BC NVC
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKTmdheSAyNS8xMi8yMDE5CgpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkobHVicmlkYXRlKQpsaWJyYXJ5KHJlYWR4bCkKbGlicmFyeSh3cml0ZXhsKQoKCnJtKGxpc3QgPSBscygpKQpzZXR3ZCgifi9Ecm9wYm94L0RhdGFDZW50ZXIvR0hUSy9HSFRLX1JlcG9ydHMvUmVwb3J0UTEvQW5hbHlzaW5nQmFncyIpCgojIC0tLS0tLS0tIEtobyBCVDIgLT4gQkMgTkNUCgojTmFtZUIxID0gImV4cG9ydF9iYWdfZGF0YV8yMDE5LTEyLTI1ICgzKS5jc3YiICMgRmlsZSBuYXkgbGEgQkMgTkNUIDI1LzEyLzIwMTkKCiNOYW1lTkNUPSJleHBvcnRfYmFnX2RhdGFfMjAxOS0xMi0yNS5jc3YiCgojRGF0YUIxIDwtIHJlYWQuY3N2KHN0cl9jKERpckZpbGUsTmFtZUIxKSkKI0RhdGFOQ1QgPC0gcmVhZC5jc3Yoc3RyX2MoRGlyRmlsZSxOYW1lTkNUKSkKCgpEYXRhQjEgPC0gcmVhZF9jc3YoIi4vRGF0YS9EYXRhQjEuY3N2IikKRGF0YUIyIDwtIHJlYWRfY3N2KCIuL0RhdGEvRGF0YUIyLmNzdiIpCkRhdGFOQ1QgPC0gcmVhZF9jc3YoIi4vRGF0YS9EYXRhTkNULmNzdiIpCkRhdGFOVkMgPC0gcmVhZF9jc3YoIi4vRGF0YS9EYXRhTlZDLmNzdiIpCgojIC0tLS0tLS0tIEtobyBCVDIgLT4gQkMgTlZDCgo=</div>
 
 
 
