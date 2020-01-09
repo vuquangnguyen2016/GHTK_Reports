@@ -6,9 +6,9 @@ name_bill = "hoa_don_cod_20200102153939_5e0dac4b-4610-4e2a-897a-cc5b0a0a020b.xls
 
 
 #python -m pip install --upgrade pip
-#python -m pip install openpyxl==2.6.2 xlrd pandas datetime os
-#python Baocao.py
-
+#python -m pip install openpyxl==2.6.2 xlrd pandas datetime
+#python Phuc_Tuan.py
+#python Phuc_ChuNhat.py
 
 import pandas as pd
 import os
